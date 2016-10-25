@@ -22,12 +22,14 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'solidus'
 gem 'solidus_auth_devise'
+gem "paperclip"
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
 platforms :ruby do # linux
   gem 'unicorn'
+  gem 'aws-sdk'
 end
 
 # Use Capistrano for deployment
