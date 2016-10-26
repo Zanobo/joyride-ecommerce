@@ -94,7 +94,7 @@ attachment_config = {
     },
 
     path:           "/:class/:id/:style/:basename.:extension",
-    default_url:    "/:class/:id/:style/:basename.:extension",
+    default_url:    "noimage/:style.png",
     default_style:  "product"
 }
 
