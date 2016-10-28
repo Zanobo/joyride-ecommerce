@@ -5,19 +5,19 @@ application up and running.
 
 Things you may want to cover:
 
-* <strong>Ruby:</strong> 2.2.5
+* <b>Ruby:</b> 2.2.5
 
-* <strong>Dependancies:</strong> nodejs, imagemagick
+* <b>Dependancies:</b> nodejs, imagemagick
 
-* <strong>Configuration </strong>
+* <b>Configuration </b>
 
-* <strong>Database creation </strong>
+* <b>Database creation </b>
 
-* <strong> Database initialization </strong>
+* <b> Database initialization </b>
 
-* <strong>How to run the test suite </strong>
+* <b>How to run the test suite </b>
 
-* <strong>Services:</strong> Sidekiq
+* <b>Services:</b> Sidekiq
 
-* <strong>Deployment instructions: </strong>
+* <b>Deployment instructions: </b>
 
