@@ -17,7 +17,7 @@
 /tmp
 
 # Ignore .idea
-.idea/*
+/.idea/*
 
 #Gemfile.lock
 Gemfile.lock

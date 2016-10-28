@@ -1,3 +1,5 @@
+require 'sidekiq-ent/web'
+
 Rails.application.routes.draw do
 
   # This line mounts Spree's routes at the root of your application.
