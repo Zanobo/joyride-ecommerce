@@ -1,9 +1,6 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
+This README will cover any information necessary to get the Joyride eCommerce platform up and running.
 
 * <b>Ruby:</b> 2.2.5
 
