@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161030220215) do
+ActiveRecord::Schema.define(version: 20161103044107) do
 
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string   "slug",                      null: false
@@ -1066,8 +1066,8 @@ ActiveRecord::Schema.define(version: 20161030220215) do
     t.string   "persistence_token"
     t.string   "reset_password_token"
     t.string   "perishable_token"
-    t.integer  "sign_in_count",                      default: 0, null: false
-    t.integer  "failed_attempts",                    default: 0, null: false
+    t.integer  "sign_in_count",                      default: 0,     null: false
+    t.integer  "failed_attempts",                    default: 0,     null: false
     t.datetime "last_request_at"
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
@@ -1091,6 +1091,8 @@ ActiveRecord::Schema.define(version: 20161030220215) do
     t.string   "first_name"
     t.string   "last_name"
     t.string   "company_name"
+    t.boolean  "approved",                           default: false, null: false
+    t.index ["approved"], name: "index_spree_users_on_approved"
     t.index ["deleted_at"], name: "index_spree_users_on_deleted_at"
     t.index ["email"], name: "email_idx_unique", unique: true
     t.index ["spree_api_key"], name: "index_spree_users_on_spree_api_key"

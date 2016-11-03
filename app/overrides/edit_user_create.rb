@@ -1,7 +1,7 @@
 Deface::Override.new(
     :virtual_path   => "spree/admin/users/_form",
     :name           => "edit_signup_admin",
-    :insert_bottom  => "[data-hook='admin_user_form_roles']",
+    :insert_after  => "[data-hook='admin_user_form_roles']",
     :text           => "
           <div class='field'>
                 <%= f.label :company_name %>
@@ -14,6 +14,20 @@ Deface::Override.new(
           <div class='field'>
                 <%= f.label :last_name %>
                 <%= f.text_field :last_name, :class => 'fullwidth' %>
+          </div>
+"
+)
+
+Deface::Override.new(
+    :virtual_path   => "spree/admin/users/_form",
+    :name           => "add_signup_approval",
+    :insert_before  => "[data-hook='admin_user_form_roles']",
+    :text           => "
+          <div class='field'>
+                <%= f.label :approved %>
+            <ul>
+                <%= f.check_box :approved, :class => 'fullwidth' %>
+            </ul>
           </div>
 "
 )

@@ -53,7 +53,7 @@ Spree.config do |config|
 end
 
 #Including additional user attributes
-Spree::PermittedAttributes.user_attributes.push :first_name, :last_name, :company_name
+Spree::PermittedAttributes.user_attributes.push :first_name, :last_name, :company_name, :approved
 
 Spree::Frontend::Config.configure do |config|
   config.use_static_preferences!
