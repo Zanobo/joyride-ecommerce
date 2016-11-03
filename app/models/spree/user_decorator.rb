@@ -1,5 +1,4 @@
 Spree::User.class_eval do
-=begin
   def active_for_authentication?
     super && approved?
   end
@@ -11,5 +10,4 @@ Spree::User.class_eval do
       super # Use whatever other message
     end
   end
-=end
 end
