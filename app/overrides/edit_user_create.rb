@@ -20,7 +20,7 @@ Deface::Override.new(
 
 Deface::Override.new(
     :virtual_path   => "spree/admin/users/_form",
-    :name           => "add_signup_approval",
+    :name           => "add_signup_approval_to_form",
     :insert_before  => "[data-hook='admin_user_form_roles']",
     :text           => "
           <div class='field'>
@@ -29,6 +29,34 @@ Deface::Override.new(
                 <%= f.check_box :approved, :class => 'fullwidth' %>
             </ul>
           </div>
+"
+)
+
+Deface::Override.new(
+    :virtual_path   => "spree/admin/users/index",
+    :name           => "add_signup_approval_head_to_index",
+    :insert_before  => "[data-hook='admin_users_index_header_actions']",
+    :text           => "
+                        <th>
+                          <%= sort_link @search, :created_at, 'Created at' %>
+                        </th>
+                        <th>
+                          <%= sort_link @search, :approved, 'Approved?' %>
+                        </th>
+"
+)
+
+Deface::Override.new(
+    :virtual_path   => "spree/admin/users/index",
+    :name           => "add_signup_approval_to_index",
+    :insert_before  => "[data-hook='admin_users_index_row_actions']",
+    :text           => "
+                        <td class='user_created_at'>
+                          <%=user.created_at %>
+                        </td>
+                        <td class='user_approved'>
+                          <%=user.approved %>
+                        </td>
 "
 )
 

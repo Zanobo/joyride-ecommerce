@@ -10,4 +10,8 @@ Spree::User.class_eval do
       super # Use whatever other message
     end
   end
+
+  def self.ransackable_attributes(auth_object=nil)
+    %w[id email approved created_at]
+  end
 end
