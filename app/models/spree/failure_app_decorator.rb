@@ -1,6 +1,5 @@
 Devise::FailureApp.class_eval do
 
-  # You need to override respond to eliminate recall
   def respond
     @user = Spree::User.find_by_email(params[:spree_user][:email])
     if http_auth?
