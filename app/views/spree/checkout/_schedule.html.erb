@@ -1,0 +1,14 @@
+<fieldset id='shipping_method' data-hook>
+  <legend align="center"><%= Spree.t(:schedule) %></legend>
+  <div class="inner" data-hook="shipping_method_inner">
+    <%= month_calendar do |date| %>
+        <%= date %>
+    <% end %>
+  </div>
+</fieldset>
+
+<br />
+
+<div class="form-buttons" data-hook="buttons">
+  <%= submit_tag Spree.t(:save_and_continue), :class => 'continue button primary' %>
+</div>

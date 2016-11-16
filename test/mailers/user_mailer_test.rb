@@ -13,6 +13,13 @@ class UserMailerTest < ActionMailer::TestCase
   end
 
   test "approved email" do
-
+    sample_user = Spree::User.new(:email => 'test@example.com', :password => 'password',
+                                  :password_confirmation => 'password', :first_name => 'Nolan', :last_name => "Zandi",
+                                  :company_name => 'Zanobo Partners')
+    approved_email = UserMailer.approved_customer_email(sample_user)
+    # Send the email, then test that it got queued
+    assert_emails 1 do
+      approved_email.deliver
+    end
   end
 end
