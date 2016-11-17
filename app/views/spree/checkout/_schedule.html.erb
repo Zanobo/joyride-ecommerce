@@ -1,9 +1,8 @@
+<legend align="center"><%= Spree.t(:schedule) %></legend>
+
 <fieldset id='shipping_method' data-hook>
-  <legend align="center"><%= Spree.t(:schedule) %></legend>
-  <div class="inner" data-hook="shipping_method_inner">
-    <%= month_calendar do |date| %>
-        <%= date %>
-    <% end %>
+  <div id="schedule_calendar" class="inner schedule-calendar" data-hook="shipping_method_inner">
+    <%= render partial: "calendar" %>
   </div>
 </fieldset>
 

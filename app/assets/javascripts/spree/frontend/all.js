@@ -7,3 +7,11 @@
 //= require bootstrap-sprockets
 //= require bootstrap/modal
 //= require_tree .
+
+//select calendar days
+$( function() {
+    $('td').click( function() {
+        $('td').removeClass("day-select");
+        $(this).addClass("day-select");
+    } );
+} );
