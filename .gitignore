@@ -22,3 +22,6 @@
 #Gemfile.lock
 Gemfile.lock
 
+#Byebug History
+.byebug_history
+
