@@ -8,4 +8,9 @@ namespace :import do
     AcumaticaImport::import_full_data
   end
 
+  desc "Import Customers from Acumatica"
+  task :customers => :environment do
+    AcumaticaImport::import_customers
+  end
+
 end

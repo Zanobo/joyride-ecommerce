@@ -38,6 +38,9 @@ Deface::Override.new(
     :insert_before  => "[data-hook='admin_users_index_header_actions']",
     :text           => "
                         <th>
+                          <%= sort_link @search, :company_name, 'Company' %>
+                        </th>
+                        <th>
                           <%= sort_link @search, :created_at, 'Created at' %>
                         </th>
                         <th>
@@ -51,6 +54,9 @@ Deface::Override.new(
     :name           => "add_signup_approval_to_index",
     :insert_before  => "[data-hook='admin_users_index_row_actions']",
     :text           => "
+                        <td class='company'>
+                          <%=user.company_name %>
+                        </td>
                         <td class='user_created_at'>
                           <%=user.created_at %>
                         </td>
