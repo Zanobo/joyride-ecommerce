@@ -13,4 +13,9 @@ namespace :import do
     AcumaticaImport::import_customers
   end
 
+  desc "Clear Product Data"
+  task :clear_product_data => :environment do
+    AcumaticaImport::clear_product_data
+  end
+
 end

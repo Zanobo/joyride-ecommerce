@@ -1,6 +1,23 @@
 class AcumaticaImport
   include HTTParty
 
+  def self.acumatica_login
+    auth = {:name => "zach", :password => "joyridecode", :company => "Joyride Coffee"}
+    auth_url = 'https://jrcoffee.acumatica.com/sandbox/entity/auth/Login'
+    get_response = self.get(auth_url)
+    get_response_cookie = self.parse_set_cookie(get_response.headers['Set-Cookie'])
+    login = self.post(auth_url,
+                      :body => auth.to_json,
+                      :headers => {
+                          'Content-Type' => 'application/json',
+                          'Cookie' => get_response_cookie.to_s} )
+
+    auth_cookie = self.parse_set_cookie(login.headers["set-cookie"])
+    self.default_cookies.add_cookies(auth_cookie)
+
+    auth_cookie
+  end
+
   def self.import_customers
 
     auth_cookie = self.acumatica_login
@@ -89,9 +106,12 @@ class AcumaticaImport
     auth_cookie = self.parse_set_cookie(login.headers["set-cookie"])
     self.default_cookies.add_cookies(auth_cookie)
 
-    url = 'https://jrcoffee.acumatica.com/sandbox/entity/Default/6.00.001/StockItem?$expand=VendorDetails&$custom=VendorDetails,ItemSettings.BasePrice'
+    expand = '$expand=VendorDetails'
+    custom = '$custom=VendorDetails,ItemSettings.BasePrice'
 
-    response = self.get(url, headers: { 'Cookie' => auth_cookie.to_s })
+    url = 'https://jrcoffee.acumatica.com/sandbox/entity/Default/6.00.001/StockItem?' + expand + '&' + custom
+
+    response = self.get(url, headers: { 'Cookie' => auth_cookie.to_s }, timeout: 360)
     items = response.parsed_response
 
     allowed_taxon_list = ['Supplier']
@@ -129,15 +149,29 @@ class AcumaticaImport
       end
     end
 
-    inventory_cd_list = Array.new
+    product_name_list = Array.new
+    product_cd_list = Array.new
     items.each do |item|
 
       if item["custom"]["ItemSettings"]["BasePrice"]["value"].to_f > 0.0
-        inventory_cd_list.push(item["Description"]["value"])
-        search = Spree::Product.find_by_name(item["Description"]["value"])
+        product_name_list.push(item["Description"]["value"])
+        product_cd_list.push(item["InventoryID"]["value"])
+        variant_search = Spree::Variant.find_by_sku(item["InventoryID"]["value"])
 
-        if search
-          product = search
+        if variant_search
+          variant = variant_search
+        else
+          variant = Spree::Variant.new
+        end
+
+        variant.sku = item["InventoryID"]["value"]
+        variant.is_master = true
+        variant.price = item["custom"]["ItemSettings"]["BasePrice"]["value"].to_f
+        variant.cost_price = item["custom"]["ItemSettings"]["BasePrice"]["value"].to_f
+        variant.cost_currency = 'USD'
+
+        if variant.product
+          product = variant.product
         else
           product = Spree::Product.new
         end
@@ -145,11 +179,7 @@ class AcumaticaImport
         product.name = item["Description"]["value"]
         product.description = "This is test description text. Mmmm, this coffee is like a fine wine."
         product.available_on = "2016-10-23 00:00:00"
-        product.master.cost_price = item["custom"]["ItemSettings"]["BasePrice"]["value"].to_f
-        product.master.cost_currency = 'USD'
-        product.master.price = item["custom"]["ItemSettings"]["BasePrice"]["value"].to_f
         product.shipping_category_id = 1
-
         vendor_name = ''
         if not item["VendorDetails"].empty?
           vendor_name = item["VendorDetails"][0]["VendorName"]["value"]
@@ -190,13 +220,19 @@ class AcumaticaImport
           end
         end
 
-
+        product.master = variant
         product.save!
+        variant.product = product
+        variant.save!
       end
     end
 
     Spree::Product.find_each do |product|
-      product.delete if not inventory_cd_list.include?(product.name)
+      product.delete if not product_name_list.include?(product.name)
+    end
+
+    Spree::Variant.find_each do |variant|
+      variant.delete if not product_cd_list.include?(variant.sku)
     end
 
     total_taxon_list = Array.new
@@ -218,8 +254,6 @@ class AcumaticaImport
         taxononomy.delete
       end
     end
-
-
 
   end
 
@@ -250,21 +284,14 @@ class AcumaticaImport
     cookies
   end
 
-  def self.acumatica_login
-    auth = {:name => "zach", :password => "joyridecode", :company => "Joyride Coffee"}
-    auth_url = 'https://jrcoffee.acumatica.com/sandbox/entity/auth/Login'
-    get_response = self.get(auth_url)
-    get_response_cookie = self.parse_set_cookie(get_response.headers['Set-Cookie'])
-    login = self.post(auth_url,
-                      :body => auth.to_json,
-                      :headers => {
-                          'Content-Type' => 'application/json',
-                          'Cookie' => get_response_cookie.to_s} )
+  def self.clear_product_data
+    Spree::Product.find_each do |product|
+      product.delete
+    end
 
-    auth_cookie = self.parse_set_cookie(login.headers["set-cookie"])
-    self.default_cookies.add_cookies(auth_cookie)
-
-    auth_cookie
+    Spree::Variant.find_each do |variant|
+      variant.delete
+    end
   end
 
 end
