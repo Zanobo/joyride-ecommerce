@@ -25,3 +25,6 @@ Gemfile.lock
 #Byebug History
 .byebug_history
 
+#Images
+/public/spree
+

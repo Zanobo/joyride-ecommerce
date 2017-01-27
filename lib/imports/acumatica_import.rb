@@ -180,6 +180,11 @@ class AcumaticaImport
         product.description = "This is test description text. Mmmm, this coffee is like a fine wine."
         product.available_on = "2016-10-23 00:00:00"
         product.shipping_category_id = 1
+
+        if product.master.images.empty?
+          product.master.images.create!(attachment: 'http://www.specopscomm.com/images/portfolio_thumbs/joyride-coffee.jpg')
+        end
+
         vendor_name = ''
         if not item["VendorDetails"].empty?
           vendor_name = item["VendorDetails"][0]["VendorName"]["value"]
