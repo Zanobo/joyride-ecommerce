@@ -41,6 +41,7 @@ class AcumaticaImport
         user.first_name = item["MainContact"]["FirstName"]["value"]
         user.last_name = item["MainContact"]["LastName"]["value"]
         user.company_name = item["CustomerID"]["value"]
+        user.price_class = item["PriceClassID"]["value"]
 
         if item["BillingContact"]["Address"]
           if user.bill_address
@@ -107,7 +108,7 @@ class AcumaticaImport
     self.default_cookies.add_cookies(auth_cookie)
 
     expand = '$expand=VendorDetails'
-    custom = '$custom=VendorDetails,ItemSettings.BasePrice'
+    custom = '$custom=VendorDetails,ItemSettings.BasePrice,ItemSettings.PriceClassID'
 
     url = 'https://jrcoffee.acumatica.com/sandbox/entity/Default/6.00.001/StockItem?' + expand + '&' + custom
 
@@ -137,7 +138,7 @@ class AcumaticaImport
       supplier_parent.save!
     end
 
-    allowed_properties_list = ['Supplier', 'Item Status']
+    allowed_properties_list = ['Supplier', 'Item Status', 'Price Class']
 
     allowed_properties_list.each do |property|
       main_property = Spree::Property.find_by_name(property)
@@ -209,8 +210,9 @@ class AcumaticaImport
           end
         end
 
-        property_hash = Hash["Supplier" => vendor_name,
-                             "Item Status" => item["ItemStatus"]["value"] ]
+        property_hash = Hash["Supplier"    => vendor_name,
+                             "Item Status" => item["ItemStatus"]["value"],
+                             "Price Class" => item["custom"]["ItemSettings"]["PriceClassID"]["value"]]
         property_hash.each do |property_name, property_value|
           property_object = Spree::ProductProperty.find_by_value(property_value)
 

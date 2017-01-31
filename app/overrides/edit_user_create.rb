@@ -8,6 +8,10 @@ Deface::Override.new(
                 <%= f.text_field :company_name, :class => 'fullwidth' %>
           </div>
           <div class='field'>
+                <%= f.label :price_class %>
+                <%= f.text_field :price_class, :class => 'fullwidth' %>
+          </div>
+          <div class='field'>
                 <%= f.label :first_name %>
                 <%= f.text_field :first_name, :class => 'fullwidth' %>
           </div>
