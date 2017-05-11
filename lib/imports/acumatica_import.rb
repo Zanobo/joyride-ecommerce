@@ -2,8 +2,8 @@ class AcumaticaImport
   include HTTParty
 
   def self.acumatica_login
-    auth = {:name => "zach", :password => "joyridecode", :company => "Joyride Coffee"}
-    auth_url = 'https://jrcoffee.acumatica.com/sandbox/entity/auth/Login'
+    auth = {:name => "zach", :password => "joyridecode", :company => "Experimental"}
+    auth_url = 'https://jrcoffee.acumatica.com/entity/auth/Login'
     get_response = self.get(auth_url)
     get_response_cookie = self.parse_set_cookie(get_response.headers['Set-Cookie'])
     login = self.post(auth_url,
@@ -14,8 +14,35 @@ class AcumaticaImport
 
     auth_cookie = self.parse_set_cookie(login.headers["set-cookie"])
     self.default_cookies.add_cookies(auth_cookie)
-
+    byebug
     auth_cookie
+  end
+
+  def self.parse_set_cookie(all_cookies_string)
+    cookies = Hash.new
+
+    if all_cookies_string.present?
+      # single cookies are devided with comma
+      all_cookies_string.split(',').each {
+        # @type [String] cookie_string
+          |single_cookie_string|
+        # parts of single cookie are seperated by semicolon; first part is key and value of this cookie
+        # @type [String]
+        cookie_part_string  = single_cookie_string.strip.split(';')[0]
+        # remove whitespaces at beginning and end in place and split at '='
+        # @type [Array]
+        cookie_part         = cookie_part_string.strip.split('=')
+        # @type [String]
+        key                 = cookie_part[0]
+        # @type [String]
+        value               = cookie_part[1]
+
+        # add cookie to Hash
+        cookies[key] = value
+      }
+    end
+
+    cookies
   end
 
   def self.import_customers
@@ -25,7 +52,7 @@ class AcumaticaImport
     expand = 'MainContact,BillingContact,ShippingContact'
     top = '500'
 
-    url = 'https://jrcoffee.acumatica.com/sandbox/entity/Default/6.00.001/Customer?$expand='+ expand +'&$top=' + top
+    url = 'https://jrcoffee.acumatica.com/entity/Ecommerce/6.00.001/Customer?$expand='+ expand +'&$top=' + top
 
     response = self.get(url, headers: { 'Cookie' => auth_cookie.to_s }, timeout: 360)
     items = response.parsed_response
@@ -42,6 +69,7 @@ class AcumaticaImport
         user.last_name = item["MainContact"]["LastName"]["value"]
         user.company_name = item["CustomerID"]["value"]
         user.price_class = item["PriceClassID"]["value"]
+        user.branch      = item["ShippingBranch"]["value"]
 
         if item["BillingContact"]["Address"]
           if user.bill_address
@@ -94,23 +122,12 @@ class AcumaticaImport
 
   def self.import_full_data
 
-    auth = {:name => "zach", :password => "joyridecode", :company => "Joyride Coffee"}
-    auth_url = 'https://jrcoffee.acumatica.com/sandbox/entity/auth/Login'
-    get_response = self.get(auth_url)
-    get_response_cookie = self.parse_set_cookie(get_response.headers['Set-Cookie'])
-    login = self.post(auth_url,
-                      :body => auth.to_json,
-                      :headers => {
-                          'Content-Type' => 'application/json',
-                          'Cookie' => get_response_cookie.to_s} )
-
-    auth_cookie = self.parse_set_cookie(login.headers["set-cookie"])
-    self.default_cookies.add_cookies(auth_cookie)
+    auth_cookie = self.acumatica_login
 
     expand = '$expand=VendorDetails'
     custom = '$custom=VendorDetails,ItemSettings.BasePrice,ItemSettings.PriceClassID'
 
-    url = 'https://jrcoffee.acumatica.com/sandbox/entity/Default/6.00.001/StockItem?' + expand + '&' + custom
+    url = 'https://jrcoffee.acumatica.com/entity/Ecommerce/6.00.001/StockItem?' + expand + '&' + custom
 
     response = self.get(url, headers: { 'Cookie' => auth_cookie.to_s }, timeout: 360)
     items = response.parsed_response
@@ -214,12 +231,21 @@ class AcumaticaImport
                              "Item Status" => item["ItemStatus"]["value"],
                              "Price Class" => item["custom"]["ItemSettings"]["PriceClassID"]["value"]]
         property_hash.each do |property_name, property_value|
-          property_object = Spree::ProductProperty.find_by_value(property_value)
+          property_object = nil
+          property_object = product.product_properties.where(:value => property_value)
 
-          if not product.product_properties.exists?(property_object)
+          if property_object.size > 1
+            property_object.each do |object|
+              object.delete
+            end
+          end
+
+          if property_object.size == 0
             prod_property = product.product_properties.new
             prod_property.property = Spree::Property.find_by_name(property_name)
             prod_property.value = property_value
+          else
+            product.product_properties << property_object
           end
         end
 
@@ -263,33 +289,6 @@ class AcumaticaImport
       end
     end
 
-  end
-
-  def self.parse_set_cookie(all_cookies_string)
-    cookies = Hash.new
-
-    if all_cookies_string.present?
-      # single cookies are devided with comma
-      all_cookies_string.split(',').each {
-        # @type [String] cookie_string
-          |single_cookie_string|
-        # parts of single cookie are seperated by semicolon; first part is key and value of this cookie
-        # @type [String]
-        cookie_part_string  = single_cookie_string.strip.split(';')[0]
-        # remove whitespaces at beginning and end in place and split at '='
-        # @type [Array]
-        cookie_part         = cookie_part_string.strip.split('=')
-        # @type [String]
-        key                 = cookie_part[0]
-        # @type [String]
-        value               = cookie_part[1]
-
-        # add cookie to Hash
-        cookies[key] = value
-      }
-    end
-
-    cookies
   end
 
   def self.clear_product_data

@@ -1,4 +1,4 @@
-class AddApprovedToSpreeUser < ActiveRecord::Migration[5.0]
+class AddApprovedToSpreeUsers < ActiveRecord::Migration[5.0]
   def self.up
     add_column :spree_users, :approved, :boolean, :default => false, :null => false
     add_index  :spree_users, :approved

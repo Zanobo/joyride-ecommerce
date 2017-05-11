@@ -37,6 +37,20 @@ Deface::Override.new(
 )
 
 Deface::Override.new(
+    :virtual_path   => "spree/admin/users/_form",
+    :name           => "add_branch_to_form",
+    :insert_before  => "[data-hook='admin_user_form_password_fields']",
+    :text           => "
+    <div data-hook='admin_user_form_branch_fields' class='omega six columns'>
+          <div class='field'>
+                <%= f.label :branch %>
+                <%= f.text_field :branch, :class => 'fullwidth' %>
+          </div>
+    </div>
+"
+)
+
+Deface::Override.new(
     :virtual_path   => "spree/admin/users/index",
     :name           => "add_signup_approval_head_to_index",
     :insert_before  => "[data-hook='admin_users_index_header_actions']",
