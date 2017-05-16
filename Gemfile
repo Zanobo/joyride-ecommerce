@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-ruby  '2.2.5'
+ruby  '2.3.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '>= 5'
@@ -20,20 +20,20 @@ gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
-gem 'solidus'
-gem 'solidus_auth_devise'
-gem 'paperclip', :git=> 'https://github.com/thoughtbot/paperclip', :ref => '523bd46c768226893f23889079a7aa9c73b57d68'
-gem 'sidekiq'
-gem 'bootstrap-sass'
-gem 'simple_calendar'
-gem 'httparty'
+gem 'solidus', '~> 2.2'
+gem 'solidus_auth_devise', '~> 1.5'
+gem 'paperclip', '~> 5.1'
+gem 'sidekiq', '~> 5.0'
+gem 'bootstrap-sass', '~> 3.3'
+gem 'simple_calendar', '~> 2.2'
+gem 'httparty', '~> 0.15'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
 platforms :ruby do # linux
-  gem 'unicorn'
-  gem 'aws-sdk'
+  gem 'unicorn', '~> 5.3'
+  gem 'aws-sdk', '~> 2.9'
 end
 
 # Use Capistrano for deployment
