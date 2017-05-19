@@ -2,10 +2,10 @@ module Acumatica
   include HTTParty
   module_function
 
-  URL = "https://#{ENV['ACUMATICA_ERP_URL']}.acumatica.com/entity/auth/"
+  URL = "https://#{ENV['ACUMATICA_ERP_URL']}.acumatica.com/entity"
 
   def login
-    res = post("#{Acumatica::URL}login",
+    res = post("#{Acumatica::URL}/auth/login",
                { headers:
                  { 'Content-Type' => 'application/json' },
                  body: {
@@ -14,12 +14,29 @@ module Acumatica
                    company: ENV['ACUMATICA_COMPANY']
                  }.to_json
                })
-    @cookie = res.headers['set-cookie']
+
+    default_cookies.add_cookies(parse_cookies(res.headers['set-cookie']))
     res
   end
 
   def logout
-    return unless @cookie
-    post("#{Acumatica::URL}logout", { headers: { 'Cookie': @cookie } })
+    post("#{Acumatica::URL}/auth/logout")
+  end
+
+  def import_customers
+    expand = 'MainContact,BillingContact,ShippingContact'
+    top = '500'
+    customer_url = "#{Acumatica::URL}Ecommerce/6.00.001/Customer?$exapnd=#{expand}&$top=#{top}"
+
+    get(customer_url, timeout: 360)
+  end
+
+  def parse_cookies cookies
+    parsed = cookies.scan(/[a-z0-9_.]*=\w[^\/;]*/i).uniq
+    parsed.map do |cookie|
+      values = cookie.split('=')
+      next if values.count != 2
+      values
+    end.compact.to_h
   end
 end
