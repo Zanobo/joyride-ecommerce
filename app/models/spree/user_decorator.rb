@@ -20,4 +20,16 @@ Spree::User.class_eval do
     end
   end
 
+  def self.find_or_create_by customer
+    user = find_by(email: customer['MainContact']['Email']['value'])
+    user || Spree::User.new({
+      email:        customer['MainContact']['Email']['value'],
+      first_name:   customer['MainContact']['FirstName']['value'],
+      last_name:    customer['MainContact']['LastName']['value'],
+      company_name: customer['CustomerID']['value'],
+      price_class:  customer['PriceClassID']['value'],
+      branch:       customer['ShippingBranch']['value'],
+      password:     'testpassword'
+    })
+  end
 end

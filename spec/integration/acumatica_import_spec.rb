@@ -10,8 +10,8 @@ RSpec.describe 'acumatica session' do
     expect(Acumatica.logout.response.code).to eq('204')
   end
 
-  xit 'should import all the customers' do
-    #TODO: this takes time, I need to fix it
-    expect(Acumatica.import_customers.response.code).to eq('200')
+  it 'should import all the customers' do
+    Acumatica.import_customers(2)
+    expect(Spree::User.count).to eq(2)
   end
 end

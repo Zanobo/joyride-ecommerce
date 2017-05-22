@@ -23,12 +23,21 @@ module Acumatica
     post("#{Acumatica::URL}/auth/logout")
   end
 
-  def import_customers
+  def import_customers top=500
     expand = 'MainContact,BillingContact,ShippingContact'
-    top = '500'
-    customer_url = "#{Acumatica::URL}Ecommerce/6.00.001/Customer?$exapnd=#{expand}&$top=#{top}"
+    customer_url = "#{Acumatica::URL}/Ecommerce/6.00.001/Customer?$expand=#{expand}&$top=#{top}"
 
-    get(customer_url, timeout: 360)
+    customers = get(customer_url, timeout: 360).parsed_response
+    customers.each do |customer|
+      user = Spree::User.find_or_create_by(customer)
+      billing = Spree::Address.set_address(customer['BillingContact'])
+      shipping = Spree::Address.set_address(customer['ShippingContact'])
+      user.bill_address ||= billing
+      user.ship_address ||= shipping
+      user.save!
+    end
+  rescue Encoding::CompatibilityError => e
+    false
   end
 
   def parse_cookies cookies
