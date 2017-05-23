@@ -27,6 +27,7 @@ gem 'sidekiq', '~> 5.0'
 gem 'bootstrap-sass', '~> 3.3'
 gem 'simple_calendar', '~> 2.2'
 gem 'httparty', '~> 0.15'
+gem 'figaro', '~> 1.1'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -47,6 +48,7 @@ group :development, :test do
   gem 'sqlite3'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
+  gem 'rspec-rails', '~> 3.5'
 end
 
 group :development do
