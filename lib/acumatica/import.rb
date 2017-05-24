@@ -72,6 +72,14 @@ module Acumatica
     false
   end
 
+  def clear_product_data
+    Spree::Product.destroy_all
+  end
+
+  def clear_variant_data
+    Spree::Variant.destroy_all
+  end
+
   def parse_cookies cookies
     parsed = cookies.scan(/[a-z0-9_.]*=\w[^\/;]*/i).uniq
     parsed.map do |cookie|

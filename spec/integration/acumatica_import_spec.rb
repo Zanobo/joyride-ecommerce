@@ -25,4 +25,14 @@ RSpec.describe 'acumatica session' do
     expect(Spree::Product.last.master).to eq(Spree::Variant.last)
     expect(Spree::Variant.last.product).to eq(Spree::Product.last)
   end
+
+  it 'should remove all the product data' do
+    Acumatica.clear_product_data
+    expect(Spree::Product.count).to eq(0)
+  end
+
+  it 'should remove all the variant data' do
+    Acumatica.clear_variant_data
+    expect(Spree::Variant.count).to eq(0)
+  end
 end
