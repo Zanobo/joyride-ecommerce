@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/Zanobo/joyride-ecommerce.svg?token=7E1j7NDk9fJXxoqKgfqY&branch=master)](https://travis-ci.com/Zanobo/joyride-ecommerce)
+
 == README
 
 This README will cover any information necessary to get the Joyride eCommerce platform up and running.
