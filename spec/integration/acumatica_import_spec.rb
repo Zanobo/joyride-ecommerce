@@ -35,4 +35,12 @@ RSpec.describe 'acumatica session' do
     Acumatica.clear_variant_data
     expect(Spree::Variant.count).to eq(0)
   end
+
+  it 'should get the list of restriction groups' do
+    expect(Acumatica.restriction_groups.class).to eq(Array)
+  end
+
+  xit 'should get the items filtered by a restriction group' do
+    Acumatica.get_items_by_restriction_groups('SFITEMS')
+  end
 end

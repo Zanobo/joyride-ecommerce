@@ -80,9 +80,20 @@ module Acumatica
     Spree::Variant.destroy_all
   end
 
+  def restriction_groups
+    restriction_url = "#{Acumatica::API}/ActiveRestrictionGroup"
+    get(restriction_url, timeout: 360).map { |group| group['GroupName']['value'] }
+  end
+
+  def get_items_by_restriction_groups group
+    custom_url = "#{Acumatica::API}/CustomStockItem?$filter=GroupName eq '#{group}'"
+    byebug
+    item_ids = get(custom_url, timeout: 360).map { |group| group['InventoryID']['value'] }
+    Spree::Variant.where(id: item_ids)
+  end
+
   def parse_cookies cookies
-    parsed = cookies.scan(/[a-z0-9_.]*=\w[^\/;]*/i).uniq
-    parsed.map do |cookie|
+    cookies.scan(/[a-z0-9_.]*=\w[^\/;]*/i).uniq.map do |cookie|
       values = cookie.split('=')
       next if values.count != 2
       values
