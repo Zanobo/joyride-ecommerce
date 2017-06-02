@@ -1,15 +1,13 @@
 module Acumatica
   include HTTParty
+  base_uri "https://#{ENV['ACUMATICA_ERP_URL']}.acumatica.com/entity"
+  headers 'Content-Type' => 'application/json;charset=utf-8'
   module_function
-
-  URL = "https://#{ENV['ACUMATICA_ERP_URL']}.acumatica.com/entity"
-  API = URL + '/Ecommerce/6.00.001'
+  API = base_uri + '/Ecommerce/6.00.001'
 
   def login
-    res = post("#{Acumatica::URL}/auth/login",
-               { headers:
-                 { 'Content-Type' => 'application/json' },
-                 body: {
+    res = post("#{base_uri}/auth/login",
+               { body: {
                    name: ENV['ACUMATICA_USERNAME'],
                    password: ENV['ACUMATICA_PASSWORD'],
                    company: ENV['ACUMATICA_COMPANY']
@@ -21,14 +19,14 @@ module Acumatica
   end
 
   def logout
-    post("#{Acumatica::URL}/auth/logout")
+    post("#{base_uri}/auth/logout")
   end
 
   def import_customers top=500
     expand = '$expand=MainContact,BillingContact,ShippingContact'
     customer_url = "#{Acumatica::API}/Customer?#{expand}&$top=#{top}"
 
-    customers = get(customer_url, timeout: 360).parsed_response
+    customers = JSON.parse get(customer_url, timeout: 360).body.force_encoding('UTF-8')
     customers.each do |customer|
       user = Spree::User.find_or_create_by(customer)
       billing = Spree::Address.set_address(customer['BillingContact'])
@@ -37,8 +35,6 @@ module Acumatica
       user.ship_address ||= shipping
       user.save!
     end
-  rescue Encoding::CompatibilityError
-    false
   end
 
   def import_items top=nil
@@ -46,7 +42,7 @@ module Acumatica
     custom = '$custom=VendorDetails,ItemSettings.BasePrice,ItemSettings.PriceClassID'
 
     item_url = "#{Acumatica::API}/StockItem?#{expand}&#{custom}&$top=#{top}"
-    items = get(item_url, timeout: 360).parsed_response
+    items = JSON.parse get(item_url, timeout: 360).body.force_encoding('UTF-8')
 
     taxonomy = Spree::Taxonomy.find_or_create_by('Supplier')
     taxon = Spree::Taxon.find_or_create_by('Supplier', taxonomy)
@@ -68,8 +64,6 @@ module Acumatica
         # end
       end
     end
-  rescue Encoding::CompatibilityError
-    false
   end
 
   def clear_product_data
@@ -87,9 +81,18 @@ module Acumatica
 
   def get_items_by_restriction_groups group
     filter = "GroupName eq '#{group}' and Active eq true and Included eq true"
-    custom_url = "#{Acumatica::API}/ItemRestrictionGroups?$filter=#{filter}"
-    item_ids = get(custom_url, timeout: 360).map { |g| g['InventoryCD']['value'] }
+    items_url = "#{Acumatica::API}/ItemRestrictionGroups?$filter=#{filter}"
+    item_ids = JSON.parse(get(items_url, timeout: 360).body.force_encoding('UTF-8'))
+      .map { |c| c['InventoryCD']['value'] }
     Spree::Variant.where(id: item_ids)
+  end
+
+  def get_customer_by_restriction_groups group
+    filter = "GroupName eq '#{group}' and Active eq true and Included eq true"
+    customer_url = "#{Acumatica::API}/CustomerRestrictionGroups?$filter=#{filter}"
+    customer_ids = JSON.parse(get(customer_url, timeout: 360).body.force_encoding('UTF-8'))
+      .map { |c| c['CustomerID']['value'] }
+    Spree::User.where(id: customer_ids)
   end
 
   def parse_cookies cookies
