@@ -37,7 +37,7 @@ module Acumatica
       user.ship_address ||= shipping
       user.save!
     end
-  rescue Encoding::CompatibilityError => e
+  rescue Encoding::CompatibilityError
     false
   end
 
@@ -68,7 +68,7 @@ module Acumatica
         # end
       end
     end
-  rescue Encoding::CompatibilityError => e
+  rescue Encoding::CompatibilityError
     false
   end
 
@@ -80,9 +80,20 @@ module Acumatica
     Spree::Variant.destroy_all
   end
 
+  def restriction_groups
+    restriction_url = "#{Acumatica::API}/ActiveRestrictionGroups?$filter=Active eq true"
+    get(restriction_url, timeout: 360).map { |group| group['GroupName']['value'] }
+  end
+
+  def get_items_by_restriction_groups group
+    filter = "GroupName eq '#{group}' and Active eq true and Included eq true"
+    custom_url = "#{Acumatica::API}/ItemRestrictionGroups?$filter=#{filter}"
+    item_ids = get(custom_url, timeout: 360).map { |g| g['InventoryCD']['value'] }
+    Spree::Variant.where(id: item_ids)
+  end
+
   def parse_cookies cookies
-    parsed = cookies.scan(/[a-z0-9_.]*=\w[^\/;]*/i).uniq
-    parsed.map do |cookie|
+    cookies.scan(/[a-z0-9_.]*=\w[^\/;]*/i).uniq.map do |cookie|
       values = cookie.split('=')
       next if values.count != 2
       values

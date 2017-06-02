@@ -35,4 +35,15 @@ RSpec.describe 'acumatica session' do
     Acumatica.clear_variant_data
     expect(Spree::Variant.count).to eq(0)
   end
+
+  it 'should get the list of restriction groups' do
+    expect(Acumatica.restriction_groups.class).to eq(Array)
+  end
+
+  it 'should get the items filtered by a restriction group' do
+    # TODO: we need to create an object (with Factory Girl maybe) so we can test
+    # that object is found in the DB
+    expect(Acumatica.get_items_by_restriction_groups('SFITEMS').class)
+      .to eq(Spree::Variant::ActiveRecord_Relation)
+  end
 end
