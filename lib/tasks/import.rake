@@ -11,12 +11,4 @@ namespace :import do
   task customers: :environment do
     AcumaticaImport::import_customers
   end
-
-  desc 'Clear Product and Variant data'
-  task clear_product_data: :environment do
-    puts 'Deleting Product data'
-    AcumaticaImport::clear_product_data
-    puts 'Deleting Variant data'
-    AcumaticaImport::clear_variant_data
-  end
 end
