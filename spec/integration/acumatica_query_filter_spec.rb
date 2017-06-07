@@ -9,16 +9,12 @@ RSpec.describe Acumatica do
   end
 
   it 'should get the items filtered by a restriction group' do
-    # TODO: we need to create an object (with Factory Girl maybe) so we can test
-    # that object is found in the DB
-    expect(synchronizer.get_items_by_restriction_groups('SFITEMS').class)
-      .to eq(Spree::Variant::ActiveRecord_Relation)
+    variant = create(:variant)
+    expect(synchronizer.get_items_by_restriction_groups('SFITEMS').first).to eq(variant)
   end
 
   it 'should get the customers filtered by a restriction group' do
-    # TODO: we need to create an object (with Factory Girl maybe) so we can test
-    # that object is found in the DB
-    expect(synchronizer.get_customer_by_restriction_groups('NYOFC').class)
-      .to eq(Spree::User::ActiveRecord_Relation)
+    user = create(:user)
+    expect(synchronizer.get_customer_by_restriction_groups('NYOFC').first).to eq(user)
   end
 end
