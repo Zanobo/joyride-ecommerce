@@ -50,7 +50,12 @@ end
 group :development, :test do
   gem 'sqlite3'
   gem 'pry'
+end
+
+group :test do
   gem 'rspec-rails', '~> 3.5'
+  gem 'factory_girl_rails', '~> 4.0'
+  gem 'database_cleaner', '~> 1.6'
 end
 
 group :development do
