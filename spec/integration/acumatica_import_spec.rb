@@ -43,4 +43,12 @@ RSpec.describe 'acumatica session' do
     expect(Acumatica.get_customer_by_restriction_groups('NYOFC').class)
       .to eq(Spree::User::ActiveRecord_Relation)
   end
+
+  it 'should get the list of restriction groups' do
+    expect(Acumatica.restriction_groups.class).to eq(Array)
+  end
+
+  xit 'should get the items filtered by a restriction group' do
+    Acumatica.get_items_by_restriction_groups('SFITEMS')
+  end
 end
