@@ -17,4 +17,8 @@ RSpec.describe Acumatica do
     user = create(:user)
     expect(synchronizer.get_customer_by_restriction_groups('NYOFC').first).to eq(user)
   end
+
+  it 'should get the customer orders filtered by customer' do
+    expect(synchronizer.get_customer_orders('TWITTER').class).to eq(Array)
+  end
 end
