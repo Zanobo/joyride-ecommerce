@@ -24,10 +24,13 @@ gem 'solidus', '~> 2.2'
 gem 'solidus_auth_devise', '~> 1.5'
 gem 'paperclip', '~> 5.1'
 gem 'sidekiq', '~> 5.0'
+gem 'sidekiq-cron', '~> 0.4.0'
 gem 'bootstrap-sass', '~> 3.3'
 gem 'simple_calendar', '~> 2.2'
 gem 'httparty', '~> 0.15'
 gem 'figaro', '~> 1.1'
+gem 'rollbar'
+gem 'oj', '~> 2.12.14'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

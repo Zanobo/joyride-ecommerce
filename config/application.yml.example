@@ -2,6 +2,8 @@ ACUMATICA_ERP_URL: 'erp_name'
 ACUMATICA_USERNAME: 'acumatica_username'
 ACUMATICA_PASSWORD: 'acumatica_password'
 ACUMATICA_COMPANY: 'company_for_development'
+REDIS_URL: 'redis://127.0.0.1:6379/12'
+ROLLBAR_TOKEN: 'token'
 
 production:
   ACUMATICA_COMPANY: 'company_for_production'

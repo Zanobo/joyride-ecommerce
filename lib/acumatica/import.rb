@@ -38,15 +38,15 @@ module Acumatica
   end
 
   def import_items top=nil
+    taxonomy = Spree::Taxonomy.find_or_create_by('Supplier')
+    taxon = Spree::Taxon.find_or_create_by('Supplier', taxonomy)
+    Spree::Property.find_or_create_by
+
     expand = '$expand=VendorDetails'
     custom = '$custom=VendorDetails,ItemSettings.BasePrice,ItemSettings.PriceClassID'
 
     item_url = "#{Acumatica::API}/StockItem?#{expand}&#{custom}&$top=#{top}"
     items = JSON.parse get(item_url, timeout: 360).body.force_encoding('UTF-8')
-
-    taxonomy = Spree::Taxonomy.find_or_create_by('Supplier')
-    taxon = Spree::Taxon.find_or_create_by('Supplier', taxonomy)
-    Spree::Property.find_or_create_by
 
     items.each do |item|
       variant = Spree::Variant.find_or_create_by(item)
@@ -64,14 +64,6 @@ module Acumatica
         # end
       end
     end
-  end
-
-  def clear_product_data
-    Spree::Product.destroy_all
-  end
-
-  def clear_variant_data
-    Spree::Variant.destroy_all
   end
 
   def restriction_groups
