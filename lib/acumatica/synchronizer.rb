@@ -1,5 +1,6 @@
 require 'acumatica/connection'
 require 'acumatica/importer'
+require 'acumatica/exporter'
 require 'acumatica/query_filter'
 
 module Acumatica
@@ -8,8 +9,9 @@ module Acumatica
     include Acumatica::Connection
     include Acumatica::Importer
     include Acumatica::QueryFilter
+    include Acumatica::Exporter
 
-    delegate :post, :get, :default_cookies, to: :class
+    delegate :post, :get, :put, :default_cookies, to: :class
 
     attr_reader :base_uri, :headers, :api_endpoint
 
