@@ -6,10 +6,8 @@ module Acumatica
       customers = JSON.parse get(customer_url, timeout: 360).body.force_encoding('UTF-8')
       customers.each do |customer|
         user = Spree::User.find_or_create_by(customer)
-        billing = Spree::Address.set_address(customer['BillingContact'])
-        shipping = Spree::Address.set_address(customer['ShippingContact'])
-        user.bill_address ||= billing
-        user.ship_address ||= shipping
+        user.bill_address ||= Spree::Address.set_address(customer['BillingContact'])
+        user.ship_address ||= Spree::Address.set_address(customer['ShippingContact'])
         user.save!
       end
     end
