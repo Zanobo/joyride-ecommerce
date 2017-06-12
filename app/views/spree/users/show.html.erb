@@ -1,0 +1,56 @@
+<h1><%= accurate_title %></h1>
+
+<div data-hook="account_summary" class="account-summary well">
+  <dl id="user-info">
+    <dt><%= Spree.t(:email) %></dt>
+    <dd><%= @user.email %> (<%= link_to Spree.t(:edit), spree.edit_account_path %>)</dd>
+  </dl>
+</div>
+
+<div data-hook="account_my_orders" class="account-my-orders">
+
+  <h3><%= Spree.t(:my_orders) %></h3>
+  <% if @orders.present? %>
+    <table class="table table-striped order-summary">
+      <thead class="active">
+      <tr>
+        <th class="order-number">Number</th>
+        <th class="order-status">Type</th>
+        <th class="order-date">Date</th>
+        <th class="order-status">Status</th>
+        <th class="order-payment-state">Payment Status</th>
+        <th class="order-shipment-state">Ship Via</th>
+        <th class="order-status">Description</th>
+        <th class="order-status">Branch</th>
+        <th class="order-status">Ext Price</th>
+        <th class="order-status">Inventory ID</th>
+        <th class="order-status">Quantity</th>
+        <th class="order-status">UOM</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @orders.each do |order| %>
+        <tr>
+          <td class="order-number"><%= order['OrderNbr'] %></td>
+          <td class="order-status"><%= order['OrderType'] %></td>
+          <td class="order-date"><%= order['Date'] %></td>
+          <td class="order-status"><%= order['Status'] %></td>
+          <td class="order-payment-state"><%= order['PaymentMethod'] %></td>
+          <td class="order-shipment-state"><%= order['ShipVia'] %></td>
+          <% order['SalesOrderLines'].each do |lines| %>
+            <td class="order-status"><%= lines['Description'] %></td>
+            <td class="order-status"><%= lines['Branch'] %></td>
+            <td class="order-status"><%= lines['ExtPrice'] %></td>
+            <td class="order-status"><%= lines['InventoryID'] %></td>
+            <td class="order-status"><%= lines['Quantity'] %></td>
+            <td class="order-status"><%= lines['UOM'] %></td>
+          <% end %>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="alert alert-info"><%= Spree.t(:you_have_no_orders_yet) %></div>
+  <% end %>
+  <br />
+</div>
