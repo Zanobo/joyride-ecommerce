@@ -1,0 +1,15 @@
+<h3><%= Spree.t("#{type}_address".to_sym) %></h3>
+<dt><%= Spree.t(:address1) %></dt>
+<dd><%= @user.send("#{type}_address").address1 %></dd>
+<dt><%= Spree.t(:address2) %></dt>
+<dd><%= @user.send("#{type}_address").address2 %></dd>
+<dt><%= Spree.t(:city) %></dt>
+<dd><%= @user.send("#{type}_address").city %></dd>
+<dt><%= Spree.t(:zipcode) %></dt>
+<dd><%= @user.send("#{type}_address").zipcode %></dd>
+<dt><%= Spree.t(:phone) %></dt>
+<dd><%= @user.send("#{type}_address").phone %></dd>
+<dt><%= Spree.t(:state) %></dt>
+<dd><%= @user.send("#{type}_address").state.name %></dd>
+<dt><%= Spree.t(:country) %></dt>
+<dd><%= @user.send("#{type}_address").country.name %></dd>
