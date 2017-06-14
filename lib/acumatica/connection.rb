@@ -1,15 +1,13 @@
 module Acumatica
   module Connection
     def login
-      res = post("#{base_uri}/auth/login", {
-        headers: @headers,
-        body: {
-          name: ENV['ACUMATICA_USERNAME'],
-          password: ENV['ACUMATICA_PASSWORD'],
-          company: ENV['ACUMATICA_COMPANY']
-        }.to_json
-      })
+      body = {
+        name: ENV['ACUMATICA_USERNAME'],
+        password: ENV['ACUMATICA_PASSWORD'],
+        company: ENV['ACUMATICA_COMPANY']
+      }.to_json
 
+      res = post("#{base_uri}/auth/login", headers: @headers, body: body)
       default_cookies.add_cookies(parse_cookies(res.headers['set-cookie']))
       res
     end
