@@ -21,9 +21,9 @@ Spree::User.class_eval do
   end
 
   def self.find_or_create_by customer
-    user = find_by(email: customer['MainContact']['Email']['value'])
-    user || Spree::User.new({
-      email:        customer['MainContact']['Email']['value'],
+    email = customer['MainContact']['Email']['value'].split(',').first
+    find_by(email: email) || Spree::User.new({
+      email:        email,
       first_name:   customer['MainContact']['FirstName']['value'],
       last_name:    customer['MainContact']['LastName']['value'],
       company_name: customer['CustomerID']['value'],

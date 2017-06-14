@@ -5,4 +5,5 @@ services:
   - redis-server
 script:
   - RAILS_ENV=test bundle exec rake db:schema:load
+  - RAILS_ENV=test bundle exec rake db:seed
   - RAILS_ENV=test bundle exec rspec
