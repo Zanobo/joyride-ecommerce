@@ -1,0 +1,28 @@
+<p>
+  <%= f.label :address1, Spree.t(:address1) %><br />
+  <%= f.text_field :address1, value: @user.ship_address.address1, class: 'title' %>
+</p>
+<p>
+  <%= f.label :address2, Spree.t(:address2) %><br />
+  <%= f.text_field :address2, value: @user.ship_address.address2, class: 'title' %>
+</p>
+<p>
+  <%= f.label :city, Spree.t(:city) %><br />
+  <%= f.text_field :city, value: @user.ship_address.city, class: 'title' %>
+</p>
+<p>
+  <%= f.label :zipcode, Spree.t(:zipcode) %><br />
+  <%= f.text_field :zipcode, value: @user.ship_address.zipcode, class: 'title' %>
+</p>
+<p>
+  <%= f.label :phone, Spree.t(:phone) %><br />
+  <%= f.text_field :phone, value: @user.ship_address.phone, class: 'title' %>
+</p>
+<p>
+  <%= f.label :country_id, Spree.t(:country) %><br />
+  <%= select_tag 'address[country_id]', options_from_collection_for_select(Spree::Country.all, :id, :name, @user.ship_address.country.id), class: 'title' %>
+</p>
+<p>
+  <%= f.label :state_id, Spree.t(:state) %><br />
+  <%= select_tag 'address[state_id]', options_from_collection_for_select(Spree::State.all, :id, :name, @user.ship_address.state.id), class: 'title' %>
+</p>
