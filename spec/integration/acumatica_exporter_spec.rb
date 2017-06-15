@@ -19,4 +19,18 @@ RSpec.describe Acumatica do
     expect(synchronizer.export_orders(body)['Description']['value'])
       .to eq('This is a test Order')
   end
+
+  it 'should export an update for address' do
+    body = {
+      'MainContact' => {
+        'Address' => {
+          'AddressLine2' => { 'value' => 'Floor 999' }
+        }
+      }
+    }
+    res = synchronizer.export_address('1STDIBS90', body)
+
+    expect(res['MainContact']['Address']['AddressLine2']['value'])
+      .to eq('Floor 999')
+  end
 end
