@@ -16,7 +16,7 @@ module Acumatica
     attr_reader :base_uri, :headers, :api_endpoint
 
     def initialize(autologin: true)
-      @base_uri     = "https://#{ENV['ACUMATICA_ERP_URL']}.acumatica.com/entity"
+      @exitbase_uri     = "https://jrcoffee.acumatica.com/entity"
       @headers      = { 'Content-Type' => 'application/json;charset=utf-8' }
       @api_endpoint = @base_uri + '/Ecommerce/6.00.001'
 

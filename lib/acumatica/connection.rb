@@ -2,9 +2,9 @@ module Acumatica
   module Connection
     def login
       body = {
-        name: ENV['ACUMATICA_USERNAME'],
-        password: ENV['ACUMATICA_PASSWORD'],
-        company: ENV['ACUMATICA_COMPANY']
+        name: 'zach',
+        password: 'joyridecode',
+        company: 'Experimental'
       }.to_json
 
       res = post("#{base_uri}/auth/login", headers: @headers, body: body)
